@@ -97,6 +97,7 @@ const ActiveDeliveries = () => {
   return (
     <DashboardLayout userRole="driver">
       <div className="space-y-6">
+
         {/* Header */}
         <div className="bg-fuel-gradient rounded-lg p-6 text-white">
           <div className="flex items-center justify-between">
@@ -154,6 +155,7 @@ const ActiveDeliveries = () => {
               </CardHeader>
               
               <CardContent className="space-y-4">
+
                 {/* Customer Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-3">

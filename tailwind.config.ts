@@ -1,8 +1,8 @@
 import type { Config } from "tailwindcss";
 
-export default {
-  darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+const config: Config = {
+  darkMode: "class",
+  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx,html}"],
   prefix: "",
   theme: {
     container: {
@@ -72,60 +72,34 @@ export default {
         "card-gradient": "var(--card-gradient)",
       },
       boxShadow: {
-        "soft": "var(--shadow-soft)",
-        "medium": "var(--shadow-medium)",
-        "strong": "var(--shadow-strong)",
+        soft: "var(--shadow-soft)",
+        medium: "var(--shadow-medium)",
+        strong: "var(--shadow-strong)",
       },
       transitionProperty: {
-        "smooth": "var(--transition-smooth)",
-        "quick": "var(--transition-quick)",
+        smooth: "var(--transition-smooth)",
+        quick: "var(--transition-quick)",
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
         "fade-in": {
-          "0%": {
-            opacity: "0",
-            transform: "translateY(10px)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "translateY(0)",
-          },
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "scale-in": {
-          "0%": {
-            transform: "scale(0.95)",
-            opacity: "0",
-          },
-          "100%": {
-            transform: "scale(1)",
-            opacity: "1",
-          },
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" },
         },
         "slide-up": {
-          "0%": {
-            transform: "translateY(20px)",
-            opacity: "0",
-          },
-          "100%": {
-            transform: "translateY(0)",
-            opacity: "1",
-          },
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
         },
       },
       animation: {
@@ -138,4 +112,6 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+};
+
+export default config;

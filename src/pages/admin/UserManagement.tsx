@@ -1,12 +1,11 @@
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Users, Search, Plus, Filter, Phone, Mail, MapPin, Edit3, Eye, 
+  Search, Plus, Filter, Mail, MapPin, Edit3, Eye, 
   Crown, Car, Wrench, User, CheckCircle, Ban, MoreHorizontal
 } from "lucide-react";
 
@@ -162,111 +161,109 @@ const UserManagement = () => {
   const activeUsers = users.filter(u => u.status === "active");
 
   return (
-    <DashboardLayout userRole="admin">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">User Management</h1>
-            <p className="text-muted-foreground">Manage all platform users</p>
-          </div>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Add User
-          </Button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">User Management</h1>
+          <p className="text-muted-foreground">Manage all platform users</p>
         </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold">{users.length}</p>
-                <p className="text-sm text-muted-foreground">Total Users</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold">{customers.length}</p>
-                <p className="text-sm text-muted-foreground">Customers</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold">{drivers.length}</p>
-                <p className="text-sm text-muted-foreground">Drivers</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-accent">{activeUsers.length}</p>
-                <p className="text-sm text-muted-foreground">Active</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input placeholder="Search users..." className="pl-10" />
-          </div>
-          <Button variant="outline">
-            <Filter className="w-4 h-4 mr-2" />
-            Filter
-          </Button>
-        </div>
-
-        {/* Users Tabs */}
-        <Tabs defaultValue="all" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="all">All ({users.length})</TabsTrigger>
-            <TabsTrigger value="customers">Customers ({customers.length})</TabsTrigger>
-            <TabsTrigger value="drivers">Drivers ({drivers.length})</TabsTrigger>
-            <TabsTrigger value="mechanics">Mechanics ({mechanics.length})</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {users.map((user) => (
-                <UserCard key={user.id} user={user} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="customers" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {customers.map((user) => (
-                <UserCard key={user.id} user={user} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="drivers" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {drivers.map((user) => (
-                <UserCard key={user.id} user={user} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="mechanics" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {mechanics.map((user) => (
-                <UserCard key={user.id} user={user} />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add User
+        </Button>
       </div>
-    </DashboardLayout>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold">{users.length}</p>
+              <p className="text-sm text-muted-foreground">Total Users</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold">{customers.length}</p>
+              <p className="text-sm text-muted-foreground">Customers</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold">{drivers.length}</p>
+              <p className="text-sm text-muted-foreground">Drivers</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-center">
+              <p className="text-2xl font-bold text-accent">{activeUsers.length}</p>
+              <p className="text-sm text-muted-foreground">Active</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search & Filter */}
+      <div className="flex gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input placeholder="Search users..." className="pl-10" />
+        </div>
+        <Button variant="outline">
+          <Filter className="w-4 h-4 mr-2" />
+          Filter
+        </Button>
+      </div>
+
+      {/* Tabs */}
+      <Tabs defaultValue="all" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="all">All ({users.length})</TabsTrigger>
+          <TabsTrigger value="customers">Customers ({customers.length})</TabsTrigger>
+          <TabsTrigger value="drivers">Drivers ({drivers.length})</TabsTrigger>
+          <TabsTrigger value="mechanics">Mechanics ({mechanics.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {users.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="customers">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {customers.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="drivers">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {drivers.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="mechanics">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {mechanics.map((user) => (
+              <UserCard key={user.id} user={user} />
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 

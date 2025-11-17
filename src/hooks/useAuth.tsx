@@ -1,199 +1,114 @@
-import { useState, useEffect, createContext, useContext, useMemo } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-interface Profile {
+interface UserProfile {
   id: string;
-  user_id: string;
-  name: string;
-  phone?: string;
-  role: 'user' | 'driver' | 'mechanic' | 'admin';
-  address?: string;
-  created_at: string;
-  updated_at: string;
+  email?: string;
+  username?: string;
+  role?: string;
+  user_metadata?: any; // backward compatibility
 }
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: Profile | null;
-  authLoading: boolean;      // Loading while checking session
-  profileLoading: boolean;   // Loading while fetching/creating profile
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-  recoverFromAuthError: () => Promise<void>;
+  profile: UserProfile | null;   // expected by your other files
+  user: UserProfile | null;      // alias for backward compatibility
+  authLoading: boolean;          // expected by your other files
+  loading: boolean;              // alias for backward compatibility
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [profileLoading, setProfileLoading] = useState(false);
 
-  // Fetch or create user profile
-  const fetchProfile = async (user: User) => {
-    setProfileLoading(true);
+  const fetchProfile = async (id: string, metadata?: any) => {
     try {
+      console.log("🔵 fetchProfile CALLED for:", id);
+
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+        .from("profiles")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
 
-      if (error?.code === 'PGRST116') {
-        // Create profile if it doesn't exist
-        const { data: createdProfile, error: createError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: user.id,
-            name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'Unknown User',
-            phone: user.user_metadata?.phone || null,
-            role: user.user_metadata?.role || 'user',
-            address: user.user_metadata?.address || null,
-          })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-        setProfileLoading(false);
-        return createdProfile;
+      if (error) {
+        console.error("❌ Profile fetch error:", error.message);
+        return null;
       }
 
-      if (error) throw error;
+      if (data) {
+        // ensure compatibility with user_metadata usage
+        return { ...data, user_metadata: metadata };
+      }
 
-      setProfileLoading(false);
-      return data;
+      return null;
     } catch (err) {
-      console.error('Profile fetch/create error:', err);
-      setProfileLoading(false);
+      console.error("❌ Unexpected fetch error:", err);
       return null;
     }
   };
 
-  const refreshProfile = async () => {
-    if (user) {
-      const profileData = await fetchProfile(user);
-      setProfile(profileData);
-    }
-  };
-
+  // INITIAL SESSION
   useEffect(() => {
-    let isMounted = true;
+    const init = async () => {
+      console.log("🔵 Checking initial session...");
+      const { data } = await supabase.auth.getSession();
 
-    // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
-      if (!isMounted) return;
+      if (data.session?.user) {
+        const id = data.session.user.id;
+        const metadata = data.session.user.user_metadata;
 
-      setSession(session);
-      setUser(session?.user ?? null);
+        const profileData = await fetchProfile(id, metadata);
 
-      if (session?.user) {
-        const profileData = await fetchProfile(session.user);
         setProfile(profileData);
-      } else {
-        setProfile(null);
       }
 
       setAuthLoading(false);
-    });
+    };
 
-    // Check existing session on mount
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
+    init();
+  }, []);
 
-        if (error) {
-          console.error('Error getting session:', error);
-          if (error.message?.includes('Invalid Refresh Token')) {
-            try {
-              await supabase.auth.signOut({ scope: 'global' });
-            } catch (_) {}
-            if (typeof window !== 'undefined') {
-              try {
-                localStorage.clear();
-              } catch (_) {}
-            }
-          }
-        }
+  // AUTH STATE LISTENER
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log("🔵 Auth changed:", event);
 
-        if (!isMounted) return;
+        if (event === "SIGNED_IN" && session?.user) {
+          const id = session.user.id;
+          const metadata = session.user.user_metadata;
 
-        setSession(session ?? null);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          const profileData = await fetchProfile(session.user);
+          const profileData = await fetchProfile(id, metadata);
           setProfile(profileData);
         }
 
-        setAuthLoading(false);
-      } catch (err) {
-        console.error('Critical session error:', err);
-        setAuthLoading(false);
+        if (event === "SIGNED_OUT") {
+          setProfile(null);
+        }
       }
-    };
+    );
 
-    checkSession();
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  const signOut = async () => {
-    setUser(null);
-    setSession(null);
-    setProfile(null);
-
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error && error.message?.includes('Invalid Refresh Token')) {
-        await supabase.auth.signOut({ scope: 'global' });
-      }
-    } catch (err) {
-      console.error('Sign out error:', err);
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('supabase.auth.token');
-        localStorage.removeItem('supabase.auth.refreshToken');
-      }
-    }
-  };
-
-  const recoverFromAuthError = async () => {
-    try {
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-
-      if (typeof window !== 'undefined') localStorage.clear();
-
-      await supabase.auth.signOut({ scope: 'global' });
-      console.log('Auth recovery completed. User must sign in again.');
-    } catch (err) {
-      console.error('Auth recovery error:', err);
-    }
-  };
-
-  const value = useMemo(() => ({
-    user,
-    session,
-    profile,
-    authLoading,
-    profileLoading,
-    signOut,
-    refreshProfile,
-    recoverFromAuthError,
-  }), [user, session, profile, authLoading, profileLoading]);
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        profile,
+        user: profile,          // backwards compatibility
+        authLoading,
+        loading: authLoading,   // backwards compatibility
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
+  return ctx;
 };

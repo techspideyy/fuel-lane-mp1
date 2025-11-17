@@ -1,62 +1,83 @@
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { navItems } from "./nav-items";
-import Auth from "./pages/auth/Auth";
-import AuthRedirect from "./components/auth/AuthRedirect";
+// src/App.tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-const queryClient = new QueryClient();
+import { AuthProvider } from "@/hooks/useAuth";
+import AuthRedirect from "@/integrations/supabase/AuthRedirect";
+import RoleProtectedRoute from "@/components/auth/RoleProtectedRoute";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, authLoading } = useAuth();
-  
-  if (authLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-  
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-  
-  return <>{children}</>;
-};
+import Landing from "@/pages/Landing";
+import NotFound from "@/pages/NotFound";
 
-const AppRoutes = () => {
+import Login from "@/pages/auth/Login";
+import Register from "@/pages/auth/Register";
+import AuthPage from "@/pages/auth/Auth";
+
+import UserDashboard from "@/pages/dashboards/UserDashboard";
+import DriverDashboard from "@/pages/dashboards/DriverDashboard";
+import MechanicDashboard from "@/pages/dashboards/MechanicDashboard";
+import AdminDashboard from "@/pages/dashboards/AdminDashboard";
+
+function App() {
   return (
-    <AuthRedirect>
-      <Routes>
-        <Route path="/auth" element={<Auth />} />
-        {navItems.map(({ to, page }) => (
-          <Route 
-            key={to} 
-            path={to} 
-            element={
-              to === "/" || to.startsWith("/auth") ? page : <ProtectedRoute>{page}</ProtectedRoute>
-            } 
-          />
-        ))}
-      </Routes>
-    </AuthRedirect>
-  );
-};
+    <AuthProvider>
+      <BrowserRouter>
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Routes>
+
+          {/* Public */}
+          <Route path="/" element={<Landing />} />
+
+          {/* Auth */}
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Register />} />
+
+          {/* REQUIRED FOR SUPABASE */}
+          <Route path="/auth/callback" element={<AuthRedirect />} />
+
+          {/* Dashboards */}
+          <Route
+            path="/dashboard/user"
+            element={
+              <RoleProtectedRoute allowedRoles={["user"]}>
+                <UserDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/driver"
+            element={
+              <RoleProtectedRoute allowedRoles={["driver"]}>
+                <DriverDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/mechanic"
+            element={
+              <RoleProtectedRoute allowedRoles={["mechanic"]}>
+                <MechanicDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/admin"
+            element={
+              <RoleProtectedRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </RoleProtectedRoute>
+            }
+          />
+
+          {/* 404 */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
 
 export default App;

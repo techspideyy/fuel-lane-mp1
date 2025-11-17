@@ -19,22 +19,22 @@ const Register = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
 
+  // Redirect authenticated users to correct dashboard
   useEffect(() => {
-    // Redirect authenticated users to their role-specific dashboard
     if (user && profile) {
       const dashboardRoutes = {
-        user: '/dashboard',
-        driver: '/dashboard/driver',
-        mechanic: '/dashboard/mechanic',
-        admin: '/dashboard/admin'
+        user: "/dashboard",
+        driver: "/dashboard/driver",
+        mechanic: "/dashboard/mechanic",
+        admin: "/dashboard/admin",
       };
-      
-      const targetRoute = dashboardRoutes[profile.role as keyof typeof dashboardRoutes] || '/dashboard';
-      
-      // Add a small delay to ensure toast is shown before redirect
+
+      const targetRoute =
+        dashboardRoutes[profile.role as keyof typeof dashboardRoutes] || "/dashboard";
+
       setTimeout(() => {
         navigate(targetRoute, { replace: true });
-      }, 1000);
+      }, 800);
     }
   }, [user, profile, navigate]);
 
@@ -71,15 +71,23 @@ const Register = () => {
     }
 
     try {
+      // 🔥 Fix #5 (CORRECT PLACE)
       const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
-      const redirectUrl = `${SITE_URL}/auth`;
-      
+      const redirectUrl = `${SITE_URL}/auth/login`;
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl
-        }
+          emailRedirectTo: redirectUrl,
+          // Store user metadata → used by your profile auto-create
+          data: {
+            full_name: name,
+            phone: phone,
+            role: userRole,
+            address: address,
+          },
+        },
       });
 
       if (error) {
@@ -88,32 +96,17 @@ const Register = () => {
           title: "Error",
           description: error.message,
         });
-      } else if (data.user) {
-        // Create profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert({
-            user_id: data.user.id,
-            name,
-            phone,
-            role: userRole as 'user' | 'driver' | 'mechanic' | 'admin',
-            address
-          });
-
-        if (profileError) {
-          console.error('Profile creation error:', profileError);
-        }
-
+      } else {
         toast({
           title: "Success",
-          description: "Account created successfully! Please check your email to verify your account.",
+          description: "Account created! Please check your email to verify your account.",
         });
       }
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "An unexpected error occurred",
+        description: "Unexpected error occurred.",
       });
     } finally {
       setLoading(false);
@@ -132,43 +125,26 @@ const Register = () => {
           <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
           <p className="text-muted-foreground">Join our fuel delivery platform</p>
         </CardHeader>
+
         <CardContent>
           <form onSubmit={handleSignUp} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Enter your full name"
-                required
-                disabled={loading}
-              />
+              <Input id="name" name="name" required disabled={loading} />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                required
-                disabled={loading}
-              />
+              <Input id="email" name="email" type="email" required disabled={loading} />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                placeholder="Enter your phone number"
-                required
-                disabled={loading}
-              />
+              <Input id="phone" name="phone" type="tel" required disabled={loading} />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="role">User Role</Label>
+              <Label>User Role</Label>
               <Select value={userRole} onValueChange={setUserRole} disabled={loading}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your role" />
@@ -180,17 +156,12 @@ const Register = () => {
                 </SelectContent>
               </Select>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="address">Address</Label>
-              <Input
-                id="address"
-                name="address"
-                type="text"
-                placeholder="Enter your address"
-                required
-                disabled={loading}
-              />
+              <Input id="address" name="address" required disabled={loading} />
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
@@ -198,7 +169,6 @@ const Register = () => {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create a password"
                   required
                   disabled={loading}
                 />
@@ -206,18 +176,14 @@ const Register = () => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3"
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={loading}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff /> : <Eye />}
                 </Button>
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
@@ -225,7 +191,6 @@ const Register = () => {
                   id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm your password"
                   required
                   disabled={loading}
                 />
@@ -233,22 +198,19 @@ const Register = () => {
                   type="button"
                   variant="ghost"
                   size="sm"
-                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  disabled={loading}
                 >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showConfirmPassword ? <EyeOff /> : <Eye />}
                 </Button>
               </div>
             </div>
+
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
+
           <div className="mt-6 text-center space-y-2">
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
@@ -256,9 +218,6 @@ const Register = () => {
                 Sign in
               </Link>
             </p>
-            <Link to="/" className="text-sm text-muted-foreground hover:underline">
-              Back to Home
-            </Link>
           </div>
         </CardContent>
       </Card>

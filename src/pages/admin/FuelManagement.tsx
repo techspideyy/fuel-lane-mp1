@@ -1,9 +1,9 @@
-import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { 
   Fuel, 
   TrendingUp, 
@@ -258,228 +258,230 @@ const FuelPricing = () => {
   );
 
   return (
-    <DashboardLayout userRole="admin">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Fuel Pricing Management</h1>
-            <p className="text-muted-foreground">Monitor and adjust fuel prices across all locations</p>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh Prices
-            </Button>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Fuel Type
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Fuel Pricing Management</h1>
+          <p className="text-muted-foreground">Monitor and adjust fuel prices across all locations</p>
         </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Avg Margin</p>
-                  <p className="text-2xl font-bold">4.2%</p>
-                </div>
-                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
-                  <IndianRupee className="w-6 h-6 text-accent" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Daily Volume</p>
-                  <p className="text-2xl font-bold">2,530</p>
-                </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Fuel className="w-6 h-6 text-primary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Revenue Today</p>
-                  <p className="text-2xl font-bold">₹7,63,140</p>
-                </div>
-                <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-secondary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Price Updates</p>
-                  <p className="text-2xl font-bold">
-                    <CheckCircle className="w-6 h-6 text-accent inline" />
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-muted/10 rounded-full flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-muted-foreground" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Refresh Prices
+          </Button>
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Fuel Type
+          </Button>
         </div>
+      </div>
 
-        {/* Pricing Tabs */}
-        <Tabs defaultValue="current" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="current">Current Prices</TabsTrigger>
-            <TabsTrigger value="regions">By Region</TabsTrigger>
-            <TabsTrigger value="history">Price History</TabsTrigger>
-            <TabsTrigger value="alerts">Alerts</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="current" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-              {fuelTypes.map((fuel) => (
-                <FuelCard key={fuel.id} fuel={fuel} />
-              ))}
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Avg Margin</p>
+                <p className="text-2xl font-bold">4.2%</p>
+              </div>
+              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center">
+                <IndianRupee className="w-6 h-6 text-accent" />
+              </div>
             </div>
+          </CardContent>
+        </Card>
 
-            {/* Bulk Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Bulk Price Actions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-4 items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">Adjust all prices by:</span>
-                    <Input className="w-20" placeholder="4.20" />
-                    <span className="text-sm">per liter</span>
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Daily Volume</p>
+                <p className="text-2xl font-bold">2,530</p>
+              </div>
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                <Fuel className="w-6 h-6 text-primary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Revenue Today</p>
+                <p className="text-2xl font-bold">₹7,63,140</p>
+              </div>
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                <BarChart3 className="w-6 h-6 text-secondary" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Price Updates</p>
+                <p className="text-2xl font-bold">
+                  <CheckCircle className="w-6 h-6 text-accent inline" />
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-muted/10 rounded-full flex items-center justify-center">
+                <Clock className="w-6 h-6 text-muted-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Pricing Tabs */}
+      <Tabs defaultValue="current" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="current">Current Prices</TabsTrigger>
+          <TabsTrigger value="regions">By Region</TabsTrigger>
+          <TabsTrigger value="history">Price History</TabsTrigger>
+          <TabsTrigger value="alerts">Alerts</TabsTrigger>
+        </TabsList>
+
+        {/* Current Prices */}
+        <TabsContent value="current" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            {fuelTypes.map((fuel) => (
+              <FuelCard key={fuel.id} fuel={fuel} />
+            ))}
+          </div>
+
+          {/* Bulk Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Bulk Price Actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4 items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">Adjust all prices by:</span>
+                  <Input className="w-20" placeholder="4.20" />
+                  <span className="text-sm">per liter</span>
+                </div>
+                <Button>Apply to All</Button>
+                <Button variant="outline">Apply to Regular Only</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Regions */}
+        <TabsContent value="regions" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+            {regions.map((region, index) => (
+              <RegionCard key={index} region={region} />
+            ))}
+          </div>
+        </TabsContent>
+
+        {/* History */}
+        <TabsContent value="history" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                Price History (Last 7 Days)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {pricingHistory.map((day, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Calendar className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="font-medium">{day.date}</span>
+                    </div>
+                    <div className="flex gap-6 text-sm">
+                      <div className="text-center">
+                        <p className="text-muted-foreground">Regular</p>
+                        <p className="font-bold">₹{day.regular}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-muted-foreground">Premium</p>
+                        <p className="font-bold">₹{day.premium}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-muted-foreground">Diesel</p>
+                        <p className="font-bold">₹{day.diesel}</p>
+                      </div>
+                    </div>
                   </div>
-                  <Button>Apply to All</Button>
-                  <Button variant="outline">Apply to Regular Only</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-          <TabsContent value="regions" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
-              {regions.map((region, index) => (
-                <RegionCard key={index} region={region} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="history" className="space-y-6">
+        {/* Alerts */}
+        <TabsContent value="alerts" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5" />
-                  Price History (Last 7 Days)
+                  <AlertTriangle className="w-5 h-5 text-secondary" />
+                  Price Alerts
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {pricingHistory.map((day, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border border-border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                          <Calendar className="w-4 h-4 text-primary" />
-                        </div>
-                        <span className="font-medium">{day.date}</span>
-                      </div>
-                      <div className="flex gap-6 text-sm">
-                        <div className="text-center">
-                          <p className="text-muted-foreground">Regular</p>
-                          <p className="font-bold">₹{day.regular}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-muted-foreground">Premium</p>
-                          <p className="font-bold">₹{day.premium}</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-muted-foreground">Diesel</p>
-                          <p className="font-bold">₹{day.diesel}</p>
-                        </div>
-                      </div>
+                  <div className="flex items-center justify-between p-3 border border-secondary rounded-lg">
+                    <div>
+                      <p className="font-medium">Regular gas margin below 4%</p>
+                      <p className="text-sm text-muted-foreground">Current margin: 3.8% in Downtown</p>
                     </div>
-                  ))}
+                    <Badge className="bg-secondary text-secondary-foreground">Warning</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 border border-destructive rounded-lg">
+                    <div>
+                      <p className="font-medium">Competitor price drop detected</p>
+                      <p className="text-sm text-muted-foreground">Shell lowered regular to ₹287.28 nearby</p>
+                    </div>
+                    <Badge className="bg-destructive text-destructive-foreground">Critical</Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="alerts" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertTriangle className="w-5 h-5 text-secondary" />
-                    Price Alerts
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 border border-secondary rounded-lg">
-                      <div>
-                        <p className="font-medium">Regular gas margin below 4%</p>
-                        <p className="text-sm text-muted-foreground">Current margin: 3.8% in Downtown</p>
-                      </div>
-                      <Badge className="bg-secondary text-secondary-foreground">Warning</Badge>
-                    </div>
-                    <div className="flex items-center justify-between p-3 border border-destructive rounded-lg">
-                      <div>
-                        <p className="font-medium">Competitor price drop detected</p>
-                        <p className="text-sm text-muted-foreground">Shell lowered regular to ₹287.28 nearby</p>
-                      </div>
-                      <Badge className="bg-destructive text-destructive-foreground">Critical</Badge>
-                    </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Alert Settings</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Margin below 3%</span>
+                    <Button size="sm" variant="outline">Enabled</Button>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Alert Settings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Margin below 3%</span>
-                      <Button size="sm" variant="outline">Enabled</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Competitor price changes</span>
-                      <Button size="sm" variant="outline">Enabled</Button>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Market price volatility</span>
-                      <Button size="sm" variant="outline">Disabled</Button>
-                    </div>
-                    <Button className="w-full mt-4">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Configure Alerts
-                    </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Competitor price changes</span>
+                    <Button size="sm" variant="outline">Enabled</Button>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </DashboardLayout>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Market price volatility</span>
+                    <Button size="sm" variant="outline">Disabled</Button>
+                  </div>
+                  <Button className="w-full mt-4">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Configure Alerts
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 };
 
