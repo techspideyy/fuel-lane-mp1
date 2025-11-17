@@ -10,6 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
+const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
+
 const Auth = () => {
   const [loading, setLoading] = useState(false);
   const { user, profile } = useAuth();
@@ -52,7 +54,7 @@ const Auth = () => {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
+          emailRedirectTo: `${SITE_URL}/auth`,
           data: {
             name,
             phone,

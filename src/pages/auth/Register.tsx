@@ -71,7 +71,8 @@ const Register = () => {
     }
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const SITE_URL = import.meta.env.VITE_SITE_URL || window.location.origin;
+      const redirectUrl = `${SITE_URL}/auth`;
       
       const { data, error } = await supabase.auth.signUp({
         email,

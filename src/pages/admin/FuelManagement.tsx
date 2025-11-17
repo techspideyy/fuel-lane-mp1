@@ -167,6 +167,7 @@ const FuelPricing = () => {
             <div className="flex items-center gap-2">
               <Input 
                 value={fuel.ourPrice} 
+                readOnly
                 className="w-20 h-8 text-lg font-bold p-1 text-center"
               />
               <span className="text-sm text-muted-foreground">{fuel.unit ? fuel.unit : "/L"}</span>

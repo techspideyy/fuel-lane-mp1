@@ -34,10 +34,11 @@ import MechanicDashboard from "./pages/dashboards/MechanicDashboard";
 import AppointmentManagement from "./pages/mechanic/AppointmentManagement";
 import MechanicServiceManagement from "./pages/mechanic/ServiceManagement";
 import CustomerManagement from "./pages/mechanic/CustomerManagement";
-import InventoryManagement from "./pages/mechanic/InventoryManagement";
+import MechanicInventoryManagement from "./pages/mechanic/InventoryManagement";
 
 // Admin pages
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import AdminInventoryManagement from "./pages/admin/InventoryManagement";
 import UserManagement from "./pages/admin/UserManagement";
 import FuelManagement from "./pages/admin/FuelManagement";
 import AdminServiceManagement from "./pages/admin/ServiceManagement";
@@ -293,7 +294,7 @@ export const navItems = [
     title: "Mechanic Inventory",
     to: "/dashboard/mechanic/inventory",
     icon: <Package className="h-4 w-4" />,
-    page: <RoleProtectedRoute allowedRoles={['mechanic']}><InventoryManagement /></RoleProtectedRoute>,
+    page: <RoleProtectedRoute allowedRoles={['mechanic']}><MechanicInventoryManagement /></RoleProtectedRoute>,
   },
   {
     title: "Mechanic Customers",
@@ -323,7 +324,7 @@ export const navItems = [
     title: "Inventory",
     to: "/inventory",
     icon: <Package className="h-4 w-4" />,
-    page: <RoleProtectedRoute allowedRoles={['mechanic']}><InventoryManagement /></RoleProtectedRoute>,
+    page: <RoleProtectedRoute allowedRoles={['mechanic']}><MechanicInventoryManagement /></RoleProtectedRoute>,
   },
 
   // Admin Dashboard and Features
@@ -380,6 +381,12 @@ export const navItems = [
     to: "/dashboard/admin/settings",
     icon: <Settings className="h-4 w-4" />,
     page: <RoleProtectedRoute allowedRoles={['admin']}><AdminSettings /></RoleProtectedRoute>,
+  },
+  {
+    title: "Admin Inventory",
+    to: "/dashboard/admin/inventory",
+    icon: <Package className="h-4 w-4" />,
+    page: <RoleProtectedRoute allowedRoles={['admin']}><AdminInventoryManagement /></RoleProtectedRoute>,
   },
   {
     title: "User Management",

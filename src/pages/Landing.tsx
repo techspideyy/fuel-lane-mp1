@@ -91,10 +91,10 @@ const Landing = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in">
             <Button size="lg" variant="secondary" asChild>
-              <Link to="/auth/register">Get Started</Link>
+              <Link to="/auth">Get Started</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary" asChild>
-              <Link to="/auth/login">Sign In</Link>
+              <Link to="/auth">Sign In</Link>
             </Button>
           </div>
         </div>
@@ -155,7 +155,7 @@ const Landing = () => {
           <h3 className="text-2xl font-bold mb-4">Ready to Get Started?</h3>
           <p className="mb-6 opacity-90">Join thousands of satisfied customers</p>
           <Button size="lg" variant="secondary" asChild>
-            <Link to="/auth/register">Create Account</Link>
+            <Link to="/auth">Create Account</Link>
           </Button>
         </div>
       </footer>

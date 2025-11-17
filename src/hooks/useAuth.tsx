@@ -108,13 +108,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (error) {
           console.error('Error getting session:', error);
           if (error.message?.includes('Invalid Refresh Token')) {
-            await supabase.auth.signOut({ scope: 'global' });
+            try {
+              await supabase.auth.signOut({ scope: 'global' });
+            } catch (_) {}
+            if (typeof window !== 'undefined') {
+              try {
+                localStorage.clear();
+              } catch (_) {}
+            }
           }
         }
 
         if (!isMounted) return;
 
-        setSession(session);
+        setSession(session ?? null);
         setUser(session?.user ?? null);
 
         if (session?.user) {
